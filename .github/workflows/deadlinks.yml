@@ -1,0 +1,27 @@
+name: Check markdown links
+# on: push
+on:
+  push:
+    branches:
+    - 'master' 
+#   schedule:
+#     - cron: '1 6 * * 5'
+
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Link Checker
+        uses: peter-evans/link-checker@v1
+        with: 
+           args: --timeout 300 -v -r *
+
+      - name: Create Issue From File
+        uses: peter-evans/create-issue-from-file@v2
+        with:
+          title: Link Checker Report
+          content-filepath: ./link-checker/out.md
+          labels: bug, automated issue
